@@ -110,11 +110,11 @@ router.get('/:id', authMiddleware, async(req: Request, res: Response) => {
             }
         });
    } catch (err) {
-    return res.status(500).json({
-        success: false,
-        error: "InvalidServerError"
-    });
-   }
+        return res.status(500).json({
+            success: false,
+            error: "InvalidServerError"
+        });
+    }
 });
 
 router.patch('/:id', authMiddleware, async(req: Request, res: Response) => {
@@ -168,7 +168,7 @@ router.patch('/:id', authMiddleware, async(req: Request, res: Response) => {
     } catch (err) {
         return res.status(500).json({
             success: false,
-            error: "InvalidSchema"
+            error: "InternalServerError"
         });
     }
 });
@@ -209,7 +209,36 @@ router.delete('/:id', authMiddleware, async(req: Request, res: Response) => {
     } catch (err) {
         return res.status(500).json({
             success: false,
-            error: "InvalidSchema"
+            error: "InternalServerError"
+        });
+    }
+});
+
+router.post('/:courseId/lessons', authMiddleware, async(req:Request, res: Response) => {
+    try {
+        const courseId = req.params.courseId as string;
+
+        const course = await prisma.course.findUnique({
+            where: { id: courseId },
+        });
+
+        if (!course) {
+            return res.status(404).json({ 
+                success: false,
+                error: "Course Not Found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                lessons: course
+            }
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            error: "InternalServerError"
         });
     }
 });
