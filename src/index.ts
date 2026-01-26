@@ -17,5 +17,5 @@ app.use('/lessons', lessonRoutes);
 app.use('/purchases', purchaseRoutes);
 
 app.listen(port, () => {
-    console.log(`Listening to Aujla on port ${port}`);
+    console.log(`Listening to Karan Aujla on port ${port}`);
 });
