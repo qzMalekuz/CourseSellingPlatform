@@ -3,6 +3,8 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 
 const jwtSecret = process.env.JWT_SECRET;
 
+// authmiddleware
+
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
 
     try {
