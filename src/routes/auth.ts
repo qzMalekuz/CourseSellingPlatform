@@ -10,6 +10,7 @@ const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
 const router = Router();
 
 // Question - 1
+// signin endpoint
 
 router.post('/signup', async(req: Request, res: Response) => {
     try{
