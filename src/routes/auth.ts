@@ -65,7 +65,6 @@ router.post('/login', async(req: Request, res: Response) => {
                 error: "InvalidSchema"
             });
         }
-
         const { email, password } = validation.data;
         const user = await prisma.user.findUnique({
             where: { email }
@@ -77,7 +76,6 @@ router.post('/login', async(req: Request, res: Response) => {
                 error: "InvalidCredentials"
             });
         }
-
         const validPassword = await bcrypt.compare(password, user.password);
 
         if(!validPassword) {
