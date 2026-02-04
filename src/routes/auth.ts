@@ -85,6 +85,8 @@ router.post('/login', async(req: Request, res: Response) => {
             });
         }
 
+        // token sign in port
+
         const token = jwt.sign({ userId: user.id, role: user.role }, jwtSecret as string);
 
         return res.status(200).json({
