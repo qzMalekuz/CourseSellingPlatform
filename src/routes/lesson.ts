@@ -7,23 +7,23 @@ const router = Router();
 
 // Question - 9
 
-router.post('/', authMiddleware, async(req:Request, res: Response) => {
+router.post('/', authMiddleware, async (req: Request, res: Response) => {
     try {
         const validation = schemas.CreateLessonSchema.safeParse(req.body);
-        if(!validation.success) {
+        if (!validation.success) {
             return res.status(401).json({
                 success: false,
                 error: "Invalid Schema"
             });
         }
 
-        if (req.user?.role !== 'Instructor') {
-                return res.status(403).json({
-                    success: false,
-                    data: null,
-                    error: "Forbidden"
-                });
-            }
+        if (req.user?.role !== 'INSTRUCTOR') {
+            return res.status(403).json({
+                success: false,
+                data: null,
+                error: "Forbidden"
+            });
+        }
 
         const { title, content, courseId } = validation.data;
 
@@ -57,7 +57,7 @@ router.post('/', authMiddleware, async(req:Request, res: Response) => {
             success: false,
             error: "InternalServerError"
         });
-      }
+    }
 
 });
 

@@ -7,10 +7,10 @@ const router = Router();
 
 // Question - 3
 
-router.post('/', authMiddleware, async(req: Request, res: Response) => {
+router.post('/', authMiddleware, async (req: Request, res: Response) => {
     try {
         const validation = schemas.CreateCourseSchema.safeParse(req.body);
-        if(!validation.success) {
+        if (!validation.success) {
             return res.status(400).json({
                 success: false,
                 error: "InvalidSchema"
@@ -19,14 +19,14 @@ router.post('/', authMiddleware, async(req: Request, res: Response) => {
 
         const { title, description, price } = validation.data;
 
-        if (req.user?.role !== 'Instructor') {
-                return res.status(403).json({
-                    success: false,
-                    data: null,
-                    error: "Forbidden"
-                });
-            }
-        
+        if (req.user?.role !== 'INSTRUCTOR') {
+            return res.status(403).json({
+                success: false,
+                data: null,
+                error: "Forbidden"
+            });
+        }
+
         const course = await prisma.course.create({
             data: {
                 title,
@@ -56,7 +56,7 @@ router.post('/', authMiddleware, async(req: Request, res: Response) => {
 
 // Question - 4
 
-router.get('/', async(req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
     try {
         const courses = await prisma.course.findMany({
             include: { lesson: true }
@@ -69,16 +69,16 @@ router.get('/', async(req: Request, res: Response) => {
     } catch (err) {
         return res.status(500).json({
             success: false,
-            error: "InvalidServerError"
+            error: "InternalServerError"
         });
     }
 });
 
 // Question - 5
 
-router.get('/:id', authMiddleware, async(req: Request, res: Response) => {
-   try {
-        const courseId = req.params.courseId as string;
+router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
+    try {
+        const courseId = req.params.id as string;
 
         const course = await prisma.course.findUnique({
             where: { id: courseId },
@@ -87,7 +87,7 @@ router.get('/:id', authMiddleware, async(req: Request, res: Response) => {
             }
         });
 
-        if(!course) {
+        if (!course) {
             return res.status(404).json({
                 success: false,
                 data: null,
@@ -95,14 +95,14 @@ router.get('/:id', authMiddleware, async(req: Request, res: Response) => {
             });
         }
 
-        if (req.user?.role !== 'Instructor') {
-                return res.status(403).json({
-                    success: false,
-                    data: null,
-                    error: "Forbidden"
-                });
-            }
-        
+        if (req.user?.role !== 'INSTRUCTOR') {
+            return res.status(403).json({
+                success: false,
+                data: null,
+                error: "Forbidden"
+            });
+        }
+
         return res.status(200).json({
             success: true,
             data: {
@@ -112,25 +112,25 @@ router.get('/:id', authMiddleware, async(req: Request, res: Response) => {
                 price: course.price
             }
         });
-   } catch (err) {
+    } catch (err) {
         return res.status(500).json({
             success: false,
-            error: "InvalidServerError"
+            error: "InternalServerError"
         });
     }
 });
 
 // Question - 6
 
-router.patch('/:id', authMiddleware, async(req: Request, res: Response) => {
+router.patch('/:id', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const courseId = req.params.courseId as string;
+        const courseId = req.params.id as string;
 
         const course = await prisma.course.findUnique({
             where: { id: courseId }
         });
 
-        if(!course) {
+        if (!course) {
             return res.status(404).json({
                 success: false,
                 data: null,
@@ -138,12 +138,12 @@ router.patch('/:id', authMiddleware, async(req: Request, res: Response) => {
             });
         }
 
-        if (req.user?.role !== 'Instructor') {
-                return res.status(403).json({
-                    success: false,
-                    data: null,
-                    error: "Forbidden"
-                });
+        if (req.user?.role !== 'INSTRUCTOR') {
+            return res.status(403).json({
+                success: false,
+                data: null,
+                error: "Forbidden"
+            });
         }
 
         const body = req.body;
@@ -180,15 +180,15 @@ router.patch('/:id', authMiddleware, async(req: Request, res: Response) => {
 
 // Question - 7
 
-router.delete('/:id', authMiddleware, async(req: Request, res: Response) => {
+router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const courseId = req.params.courseId as string;
+        const courseId = req.params.id as string;
 
         const course = await prisma.course.findUnique({
             where: { id: courseId },
         });
 
-        if(!course) {
+        if (!course) {
             return res.status(404).json({
                 success: false,
                 data: null,
@@ -196,12 +196,12 @@ router.delete('/:id', authMiddleware, async(req: Request, res: Response) => {
             });
         }
 
-        if (req.user?.role !== 'Instructor') {
-                return res.status(403).json({
-                    success: false,
-                    data: null,
-                    error: "Forbidden"
-                });
+        if (req.user?.role !== 'INSTRUCTOR') {
+            return res.status(403).json({
+                success: false,
+                data: null,
+                error: "Forbidden"
+            });
         }
 
         await prisma.course.delete({
@@ -212,7 +212,7 @@ router.delete('/:id', authMiddleware, async(req: Request, res: Response) => {
             success: true,
             data: "SuccessfullyDeleted"
         })
-        
+
     } catch (err) {
         return res.status(500).json({
             success: false,
@@ -223,7 +223,7 @@ router.delete('/:id', authMiddleware, async(req: Request, res: Response) => {
 
 // Question - 8
 
-router.post('/:courseId/lessons', authMiddleware, async(req:Request, res: Response) => {
+router.post('/:courseId/lessons', authMiddleware, async (req: Request, res: Response) => {
     try {
         const courseId = req.params.courseId as string;
 
@@ -232,7 +232,7 @@ router.post('/:courseId/lessons', authMiddleware, async(req:Request, res: Respon
         });
 
         if (!course) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
                 error: "Course Not Found"
             });

@@ -7,7 +7,7 @@ const router = Router();
 
 // Question - 10
 
-router.post('/', authMiddleware, async(req:Request, res: Response) => {
+router.post('/', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userId = req.user?.userId as string;
 
@@ -19,13 +19,13 @@ router.post('/', authMiddleware, async(req:Request, res: Response) => {
             });
         }
 
-        if (req.user?.role !== 'Instructor') {
-                return res.status(403).json({
-                    success: false,
-                    data: null,
-                    error: "Forbidden"
-                });
-            }
+        if (req.user?.role !== 'INSTRUCTOR') {
+            return res.status(403).json({
+                success: false,
+                data: null,
+                error: "Forbidden"
+            });
+        }
 
         const { courseId } = validation.data;
 
@@ -62,7 +62,7 @@ router.post('/', authMiddleware, async(req:Request, res: Response) => {
 
 // Question - 11
 
-router.get('/users/:id/purchases', authMiddleware, async(req:Request, res: Response) => {
+router.get('/users/:id/purchases', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userId = req.user?.userId as string;
 
