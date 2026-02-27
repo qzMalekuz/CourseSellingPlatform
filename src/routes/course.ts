@@ -113,7 +113,7 @@ router.get('/:id/stats', authMiddleware, async (req: Request, res: Response) => 
     }
 });
 
-router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response) => {
     try {
         const courseId = req.params.id as string;
 
@@ -129,14 +129,6 @@ router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
                 success: false,
                 data: null,
                 error: "CourseNotFound"
-            });
-        }
-
-        if (req.user?.role !== 'INSTRUCTOR') {
-            return res.status(403).json({
-                success: false,
-                data: null,
-                error: "Forbidden"
             });
         }
 
@@ -175,7 +167,7 @@ router.patch('/:id', authMiddleware, async (req: Request, res: Response) => {
             });
         }
 
-        if (req.user?.role !== 'INSTRUCTOR') {
+        if (req.user?.role !== 'INSTRUCTOR' || course.instructorId !== req.user?.userId) {
             return res.status(403).json({
                 success: false,
                 data: null,

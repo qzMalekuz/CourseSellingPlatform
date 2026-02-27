@@ -19,7 +19,7 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
             });
         }
 
-        if (req.user?.role !== 'INSTRUCTOR') {
+        if (req.user?.role === 'INSTRUCTOR') {
             return res.status(403).json({
                 success: false,
                 data: null,
