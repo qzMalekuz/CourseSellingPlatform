@@ -16,6 +16,14 @@ app.use('/courses', courseRoutes);
 app.use('/lessons', lessonRoutes);
 app.use('/purchases', purchaseRoutes);
 
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    return res.status(err.statusCode || 400).json({
+        error: err.message || "Invalid request",
+        statusCode: err.statusCode || 400,
+        timestamp: new Date().toISOString()
+    });
+});
+
 app.listen(port, () => {
     console.log(`Listening to Karan Aujla on port ${port}`);
 });

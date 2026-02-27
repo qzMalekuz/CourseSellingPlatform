@@ -76,6 +76,43 @@ router.get('/', async (req: Request, res: Response) => {
 
 // Question - 5
 
+router.get('/:id/stats', authMiddleware, async (req: Request, res: Response) => {
+    try {
+        const courseId = req.params.id as string;
+
+        const course = await prisma.course.findUnique({
+            where: { id: courseId },
+        });
+
+        if (!course) {
+            return res.status(404).json({
+                success: false,
+                data: null,
+                error: "CourseNotFound"
+            });
+        }
+
+        const totalPurchases = await prisma.purchase.count({
+            where: { courseId }
+        });
+        const totalRevenue = totalPurchases * course.price;
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                totalPurchases,
+                totalRevenue,
+                coursePrice: course.price
+            }
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            error: "InternalServerError"
+        });
+    }
+});
+
 router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
     try {
         const courseId = req.params.id as string;
@@ -223,12 +260,15 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
 
 // Question - 8
 
-router.post('/:courseId/lessons', authMiddleware, async (req: Request, res: Response) => {
+router.get('/:courseId/lessons', async (req: Request, res: Response) => {
     try {
         const courseId = req.params.courseId as string;
 
         const course = await prisma.course.findUnique({
             where: { id: courseId },
+            include: {
+                lesson: true
+            }
         });
 
         if (!course) {
@@ -241,7 +281,7 @@ router.post('/:courseId/lessons', authMiddleware, async (req: Request, res: Resp
         return res.status(200).json({
             success: true,
             data: {
-                lessons: course
+                lessons: course.lesson
             }
         });
     } catch (err) {
