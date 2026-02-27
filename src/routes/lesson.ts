@@ -38,6 +38,14 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
             });
         }
 
+        if (course.instructorId !== req.user?.userId) {
+            return res.status(403).json({
+                success: false,
+                data: null,
+                error: "Forbidden"
+            });
+        }
+
         const lessons = await prisma.lesson.create({
             data: {
                 title,
